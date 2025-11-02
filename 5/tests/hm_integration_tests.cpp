@@ -44,49 +44,48 @@ class HMTest : public ::testing::Test
 
 TEST_F(HMTest, Identity)
 {
-    std::string input = "(define func (lambda (x) x))";
-    ASSERT_EQ(HindleyMilner(input), "func : (forall (t3) (func t3 t3))");
+    std::string input = "(define function (lambda (x) x))";
+    ASSERT_EQ(HindleyMilner(input), "function : (forall (t3) ((func t3 t3)))");
 }
 
 TEST_F(HMTest, Constant)
 {
-    std::string input = "(define func (lambda (x) (lambda (y) x)))";
-    ASSERT_EQ(HindleyMilner(input), "func : (forall (t4 t3) (func t3 (func t4 t3)))");
+    std::string input = "(define function (lambda (x) (lambda (y) x)))";
+    ASSERT_EQ(HindleyMilner(input), "function : (forall (t4 t3) ((func t3 (func t4 t3))))");
 }
 
 TEST_F(HMTest, Composition)
 {
-    std::string input = "(define func (lambda (f g) (lambda (x) (f (g x)))))";
-    ASSERT_EQ(HindleyMilner(input), "func : (forall (t5 t7 t6) (func (func t6 t7) (func (func t5 t6) (func t5 t7))))");
+    std::string input = "(define function (lambda (f g) (lambda (x) (f (g x)))))";
+    ASSERT_EQ(HindleyMilner(input), "function : (forall (t5 t7 t6) ((func t6 t7) (func t5 t6) (func t5 t7)))");
 }
 
 TEST_F(HMTest, Flip)
 {
-    std::string input = "(define func (lambda (f) (lambda (a b) (f b a))))";
-    ASSERT_EQ(HindleyMilner(input), "func : (forall (t6 t4 t5) (func (func t5 (func t4 t6)) (func t4 (func t5 t6))))");
+    std::string input = "(define function (lambda (f) (lambda (a b) (f b a))))";
+    ASSERT_EQ(HindleyMilner(input), "function : (forall (t6 t4 t5) ((func t5 (func t4 t6)) (func t4 (func t5 t6))))");
 }
 
 TEST_F(HMTest, Map)
 {
     std::string input = "(define map (lambda (f xs) (case xs (nil nil) ((cons x xs1) (cons (f x) (map f xs1))))))";
-    ASSERT_EQ(HindleyMilner(input), "map : (forall (t8 t5) (func (func t5 t8) (func (list t5) (list t8))))");
+    ASSERT_EQ(HindleyMilner(input), "map : (forall (t8 t5) ((func t5 t8) (list t5) (list t8)))");
 }
 
 TEST_F(HMTest, Fold)
 {
     std::string input = "(define fold (lambda (f acc xs) (case xs (nil acc) ((cons x xs1) (fold f (f acc x) xs1)))))";
-    ASSERT_EQ(HindleyMilner(input),
-              "fold : (forall (t6 t8) (func (func t8 (func t6 t8)) (func t8 (func (list t6) t8))))");
+    ASSERT_EQ(HindleyMilner(input), "fold : (forall (t6 t8) ((func t8 (func t6 t8)) (func t8 (func (list t6) t8))))");
 }
 
 TEST_F(HMTest, Append)
 {
     std::string input = "(define append (lambda (xs ys) (case xs (nil ys) ((cons x xs1) (cons x (append xs1 ys))))))";
-    ASSERT_EQ(HindleyMilner(input), "append : (forall (t5) (func (list t5) (func (list t5) (list t5))))");
+    ASSERT_EQ(HindleyMilner(input), "append : (forall (t5) ((list t5) (list t5) (list t5)))");
 }
 
 TEST_F(HMTest, Curry)
 {
     std::string input = "(define curry (lambda (f) (lambda (x) (lambda (y) (f x y)))))";
-    ASSERT_EQ(HindleyMilner(input), "curry : (forall (t6 t5 t4) (func (func t4 (func t5 t6)) (func t4 (func t5 t6))))");
+    ASSERT_EQ(HindleyMilner(input), "curry : (forall (t6 t5 t4) ((func t4 (func t5 t6)) (func t4 (func t5 t6))))");
 }

@@ -68,11 +68,17 @@ TypePrinter::PrintImpl(const TypePtr &t, std::ostringstream &os)
         }
         break;
     case TypeTag::TARR:
-        os << "(func ";
-        PrintImpl(t->from, os);
-        os << " ";
-        PrintImpl(t->to, os);
-        os << ")";
+        if ((t->from)->tag == TypeTag::TVAR || (t->to)->tag == TypeTag::TVAR) {
+            os << "(func ";
+            PrintImpl(t->from, os);
+            os << " ";
+            PrintImpl(t->to, os);
+            os << ")";
+        } else {
+            PrintImpl(t->from, os);
+            os << " ";
+            PrintImpl(t->to, os);
+        }
         break;
     }
 }
@@ -94,9 +100,9 @@ TypePrinter::PrintScheme(const Scheme &scheme)
             }
             os << "t" << scheme.vars[i];
         }
-        os << ") ";
+        os << ") (";
         os << Print(scheme.type);
-        os << ")";
+        os << "))";
     }
     return os.str();
 }

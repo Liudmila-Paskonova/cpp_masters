@@ -32,7 +32,7 @@ An input file should contain **one** S-expression
 For an [example from the HW description](examples/input.txt) the output file (in the same directory as the input file, so ```examples/output.txt``` in this case) will contain:
 
 ```
-f : (forall (t8 t5) (func (func t5 t8) (func (list t5) (list t8))))
+f : (forall (t8 t5) ((func t5 t8) (list t5) (list t8)))
 ```
 which satisfies the actual type of f.
 

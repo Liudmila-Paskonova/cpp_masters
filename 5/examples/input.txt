@@ -1,0 +1,4 @@
+(define f (lambda (g) (lambda (xs)
+  (case xs
+    (nil nil)
+    ((cons x xs1) (cons (g x) ((f g) xs1)))))))
